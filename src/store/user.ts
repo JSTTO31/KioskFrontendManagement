@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from 'axios'
 export const authApi = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: 'http://192.168.254.133:8000/api',
     withCredentials: true,
     headers: {
         Accept: 'application/json',

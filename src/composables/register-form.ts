@@ -27,7 +27,7 @@ export default () => {
 
             return
         }
-        return authApi.get('http://localhost:8000/sanctum/csrf-cookie').then(() => {
+        return authApi.get('http://192.168.254.133:8000/sanctum/csrf-cookie').then(() => {
             return authApi.post('/register', {
                 name: user.name,
                 email: user.email,

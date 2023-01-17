@@ -1,4 +1,4 @@
-import { computed, reactive } from "vue"
+import { computed, reactive, ref } from "vue"
 import {required, sameAs, email, minValue, minLength} from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core"
 import userStore, { authApi } from "../store/user"
@@ -18,22 +18,28 @@ export default () => {
 
     const $v = useVuelidate(rules, user);
 
+    const loading = ref(false)
+
     const submit = () => {
         if($v.value.$invalid){
             $v.value.$touch();
             return 
         }
-        return authApi.get('http://localhost:8000/sanctum/csrf-cookie').then(res => {
+        loading.value = true
+        return authApi.get('http://192.168.254.133:8000/sanctum/csrf-cookie').then(res => {
             const $user = userStore();
+            const router = useRouter()
             return authApi.post('/login', {
                 email: user.email,
                 password: user.password
             }).then(({data}) => {
                 $user.setUser(data);
                 localStorage.setItem('userData', JSON.stringify(data));
+                location.reload()
+                loading.value= false
             })
         })
     }
 
-    return {user, $v, submit};
+    return {user, $v, submit, loading}
 }
