@@ -3,7 +3,7 @@
     Products <v-chip size="large">{{ page.total }}</v-chip>
   </teleport>
   <!-- <CategoryContainerVue></CategoryContainerVue> -->
-  <v-container style="padding: 20px 80px" fluid>
+  <v-container style="padding: 20px 55px" fluid>
     <ProductFilterVue></ProductFilterVue>
     <ProductTitleBoxVue v-model:mode="mode"></ProductTitleBoxVue>
     <ProductTableHeadVue :mode="mode"></ProductTableHeadVue>
@@ -45,8 +45,15 @@
     :model-value="route.name == 'Product.show' || route.name == 'Product.create'"
     class="align-center justify-center"
     @click:outside="router.push({ name: 'Product' })"
+    style="overflow-y: scroll"
   >
-    <v-card width="950" height="900" class="bg-grey-lighten-4 rounded-lg">
+    <v-card
+      id="children-container"
+      width="1250"
+      height="900"
+      class="bg-grey-lighten-4 rounded-lg"
+      style="overflow-y: scroll"
+    >
       <router-view></router-view>
     </v-card>
   </v-overlay>
@@ -106,6 +113,12 @@ watch(
 </script>
 
 <style scoped>
+#children-container::-webkit-scrollbar {
+  width: 4px;
+}
+#children-container::-webkit-scrollbar-thumb {
+  background-color: #ff6f00;
+}
 #product-main::-webkit-scrollbar {
   width: 5px;
 }

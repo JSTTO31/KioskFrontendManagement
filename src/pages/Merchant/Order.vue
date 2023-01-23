@@ -2,17 +2,13 @@
   <teleport v-if="showTitle" to="#title">
     My Orders <v-chip size="large">{{ page.total }}</v-chip>
   </teleport>
-  <v-container
-    :style="Object.keys(order).length < 1 ? 'padding: 20px 80px' : ''"
-    class="bg-transparent"
-  >
+  <v-container style="padding: 20px 55px" class="bg-transparent">
     <v-row>
       <v-col :cols="Object.keys(order).length > 0 ? '7' : '12'">
         <OrderFilterVue></OrderFilterVue>
         <OrderTableHeadVue></OrderTableHeadVue>
         <EmptyDataVue v-if="page.total < 1"></EmptyDataVue>
         <OrderRowVue v-for="order in orders" :order="order"></OrderRowVue>
-
         <OrderFooterBoxVue v-if="page.last_page > 1"></OrderFooterBoxVue>
       </v-col>
       <v-col>

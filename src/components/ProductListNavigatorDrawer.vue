@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="w-100 pa-5 rounded-lg"
+    class="w-100 pt-2 h-100 d-flex flex-column rounded-lg"
     style="overflow-y: scroll"
     id="product-container"
     color="white"
@@ -42,15 +42,18 @@
       <h3>&#8369;{{ (product.order_items_sum_quantity * product.price).toFixed(2) }}</h3>
     </v-card>
     <v-spacer></v-spacer>
-    <v-btn
-      v-if="products.length > 0"
-      flat
-      block
-      class="text-white"
-      color="#B20600"
-      :to="{ name: 'Product' }"
-      >See more</v-btn
-    >
+    <div>
+      <v-btn
+        v-if="products.length > 0"
+        flat
+        block
+        size="large"
+        class="text-white"
+        color="#B20600"
+        :to="{ name: 'Product' }"
+        >See more</v-btn
+      >
+    </div>
   </v-card>
 </template>
 

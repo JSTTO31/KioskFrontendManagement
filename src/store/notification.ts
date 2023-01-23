@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { authApi } from "./user";
 
-
 const notificationStore = defineStore("notification", {
     state: () => ({
         notifications: [],
+        quickNotifications: [],
     }),
     actions: {
         getAll(){

@@ -1,33 +1,33 @@
 <template>
   <teleport to="#title" v-if="showTitle">{{ title }}</teleport>
-  <v-container style="padding: 20px 80px">
+  <v-container class="px-12 py-5">
     <v-row>
-      <v-col cols="4">
-        <StatisticCardVue
-          title="Number of Orders"
-          image="/src/assets/order (1).png"
-          :total="totalOrders"
-        ></StatisticCardVue>
-      </v-col>
-      <v-col cols="4">
-        <StatisticCardVue
-          title="Number of Products"
-          image="/src/assets/shopping-bag.png"
-          :total="totalProducts"
-        ></StatisticCardVue>
-      </v-col>
-      <v-col cols="4">
-        <StatisticCardVue
-          title="Number of Sales"
-          image="/src/assets/discount.png"
-          :total="totalSales"
-        ></StatisticCardVue>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
+      <v-col cols="9">
         <v-col cols="12" class="">
-          <div>
+          <v-row>
+            <v-col cols="4">
+              <StatisticCardVue
+                title="Total Orders"
+                image="/src/assets/order (1).png"
+                :total="totalOrders"
+              ></StatisticCardVue>
+            </v-col>
+            <v-col cols="4">
+              <StatisticCardVue
+                title="Total Products"
+                image="/src/assets/shopping-bag.png"
+                :total="totalProducts"
+              ></StatisticCardVue>
+            </v-col>
+            <v-col cols="4">
+              <StatisticCardVue
+                title="Total Sales"
+                image="/src/assets/discount.png"
+                :total="totalSales"
+              ></StatisticCardVue>
+            </v-col>
+          </v-row>
+          <div class="py-3">
             <h3 class="text-grey-lighten-1 font-weight-regular">Total Profit</h3>
             <div class="d-flex w-100 justify-content-between">
               <h1 class="text-h3 text-grey-darken-4 mb-2 font-weight-black">
@@ -82,7 +82,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="3">
         <ProductListNavigatorDrawerVue
           :products="mostProducts"
         ></ProductListNavigatorDrawerVue>

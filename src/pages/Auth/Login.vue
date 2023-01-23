@@ -1,19 +1,24 @@
 <template>
   <v-layout class="h-100">
-    <v-main class="bg-amber-lighten-5">
-      <v-container style="padding: 150px 250px">
+    <v-main class="bg-amber-lighten-2">
+      <v-container style="padding: 150px 200px">
         <v-row>
           <v-col cols="7" class="mt-10 px-5 pr-15">
-            <h1 class="d-flex align-end text-h4 font-weight-bold">
+            <h1 class="d-flex align-end text-h3 font-weight-black">
               <v-avatar size="50" class="rounded-0 mr-1"
                 ><v-img src="/src/assets/k.png"></v-img></v-avatar
-              >iosk Management System
+              ><span class="mb-n2">iosk Management System</span>
             </h1>
             <h2 style="line-height: 1.3" class="text-h4 font-weight-regular mt-3">
               The best Kiosk Management System That Can Help Your Business Grow
             </h2>
+            <div class="d-flex justify-end">
+              <div class="py-15">
+                <v-img width="400" src="/src/assets/undraw_stepping_up_g6oo.svg"></v-img>
+              </div>
+            </div>
           </v-col>
-          <v-col>
+          <v-col class="px-10">
             <v-card class="rounded-lg py-5" :disabled="loading">
               <v-card-text>
                 <label for="" class=""

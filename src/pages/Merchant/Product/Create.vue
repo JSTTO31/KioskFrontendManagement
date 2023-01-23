@@ -36,6 +36,41 @@
         </div>
       </v-col>
     </v-row>
+    <!-- <v-row class="px-10 py-5">
+      <v-col cols="3">
+        <label for="">Sub Images</label>
+      </v-col>
+      <v-col>
+        <div class="d-flex">
+          <v-card
+            v-if="!urls.length"
+            @click="showFilesDialog"
+            id="image-container"
+            height="150"
+            width="150"
+            class="d-flex align-center justify-center bg-transparent"
+            flat
+          >
+            <v-icon color="amber-darken-4" size="45" dense
+              >mdi-plus-circle-outline</v-icon
+            >
+          </v-card>
+          <v-card
+            v-else
+            height="150"
+            width="150"
+            class="border bg-transparent d-flex align-center justify-center"
+            flat
+            @click="showDialog"
+          >
+            <v-img :src="url"></v-img>
+          </v-card>
+          <ul class="ml-10 text-red">
+            <li v-for="error in $v.image.$errors">{{ error.$message }}</li>
+          </ul>
+        </div>
+      </v-col>
+    </v-row> -->
     <v-row class="px-10 py-5">
       <v-col cols="3">
         <label for="">Product category</label>
@@ -109,7 +144,7 @@
       </v-col>
     </v-row>
 
-    <div id="actions">
+    <div class="w-100 d-flex justify-end" id="actions">
       <v-btn color="while" class="border mr-5" flat size="large" :to="{ name: 'Product' }"
         >Cancel</v-btn
       >
@@ -119,6 +154,16 @@
     </div>
     <div style="height: 0px; overflow: hidden">
       <v-file-input @change="setImage" ref="file" accept=".png"></v-file-input>
+    </div>
+    <div style="height: 0px; overflow: hidden">
+      <input
+        type="file"
+        @change="setImages"
+        id="files"
+        ref="files"
+        accept=".png"
+        multiple
+      />
     </div>
 
     <span id="exit-button">
@@ -138,11 +183,25 @@ import productStore from "../../../store/Product";
 const $product = productStore();
 const { categories } = storeToRefs(categoryStore());
 const file = ref();
+const files = ref();
 const router = useRouter();
 const showDialog = () => {
   file.value.click();
 };
-const { $v, create, product, setImage, url, isLoading, success } = productCreate();
+const showFilesDialog = () => {
+  files.value.click();
+};
+const {
+  $v,
+  create,
+  product,
+  setImage,
+  setImages,
+  url,
+  isLoading,
+  success,
+  urls,
+} = productCreate();
 const submit = () => {
   if ($v.value.$invalid) {
     $v.value.$touch();
@@ -168,7 +227,7 @@ onBeforeRouteLeave((to, from, next) => {
 
 <style scoped>
 #exit-button {
-  position: absolute;
+  position: fixed;
   top: 15px;
   right: 15px;
 }

@@ -12,16 +12,19 @@ export default () => {
     const product = reactive({
         name: '',
         image: '',
+        subImages: [],
         price: '',
         category_id: categories.value[0].id,
         stocks: ''
     })
     const isLoading = ref(false);
     const url = ref("");
+    
     const success = ref(false);
     const rules = {
         name: {required},
         image: {required},
+        subImages: {required},
         price: {required, numeric, minValue: minValue(1)},
         stocks: {required, numeric, minValue: minValue(1)}
     }
@@ -46,6 +49,28 @@ export default () => {
         product.image = ""
         url.value = ""
     }
+    const urls = ref([])
+    const setImages = (e: any) => {
+        const files = e.target.files;
+
+        $v.value.subImages.$touch();
+        if(files){
+            product.subImages = files 
+            for (let index = 0; index < files.length; index++) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    urls.value.push(reader.result)
+                } 
+                
+                reader.readAsDataURL(files[index])
+            }
+
+            return;
+        }
+
+        product.subImages = []
+        urls.value = []
+    }
 
     const create = () => {
         isLoading.value = true
@@ -64,5 +89,5 @@ export default () => {
         $v.value.$reset();
     }
 
-    return {product, $v, setImage, url, reset, create, isLoading, success}
+    return {product, $v, setImage, url, reset, create, isLoading, success, urls, setImages}
 }

@@ -1,13 +1,11 @@
 <template>
-  <v-card class="pa-5 rounded-lg h-100" color="#EEEEEE" flat>
+  <v-card class="pa-5 rounded-lg d-flex align-end h-100" color="#EEEEEE" flat>
     <template #prepend>
-      <v-avatar class="rounded-0" size="80">
+      <v-avatar class="rounded-0" size="85">
         <v-img :src="image"></v-img>
       </v-avatar>
     </template>
-    <template #title
-      ><h3 class="font-weight-medium">{{ title }}</h3></template
-    >
+    <template #title>{{ title }}</template>
     <template #subtitle
       ><h1 class="text-h2 font-weight-bold">
         {{ number }}
