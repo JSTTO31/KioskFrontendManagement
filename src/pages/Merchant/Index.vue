@@ -23,7 +23,7 @@
           v-for="item in navItems"
           size="large"
           :prepend-icon="item.icon"
-          :to="item.link"
+          :to="{ name: item.routeName }"
           >{{ item.name }}</v-list-item
         >
         <v-list-item
@@ -37,50 +37,62 @@
       </v-list>
     </v-navigation-drawer>
     <!-- <NotificationDrawerVue></NotificationDrawerVue> -->
-    <v-app-bar :flat="scroll < 1" height="95">
+    <v-app-bar
+      @vnode-mounted="isMounted = true"
+      :flat="scroll < 1"
+      height="95"
+      v-show="showAppBar"
+    >
       <h1 class="font-weight-black text-h3 ml-15" id="title"></h1>
       <v-spacer></v-spacer>
     </v-app-bar>
-    <v-main id="main" style="overflow-y: scroll; height: 954px">
-      <router-view></router-view>
+    <v-main id="main" style="overflow-y: scroll; height: 965px">
+      <router-view v-slot="{ Component }" v-if="isMounted">
+        <transition name="fade" mode="out-in">
+          <component :is="Component"></component
+        ></transition>
+      </router-view>
     </v-main>
   </v-layout>
 </template>
 
 <script setup lang="ts">
-import NotificationDrawerVue from "../../components/NotificationDrawer.vue";
-import { useRoute, useRouter } from "vue-router";
 import categoryStore from "../../store/category";
 import userStore from "../../store/user";
 import { provide, ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
-import notificationStore from "../../store/notification";
-const route = useRoute();
+import orderStore from "../../store/order";
+import { useRouter } from "vue-router";
 const $user = userStore();
+const $order = orderStore();
 const { user } = storeToRefs($user);
 const $category = categoryStore();
 const scroll = ref(0);
+const isMounted = ref(false);
+const showAppBar = ref(true);
+const router = useRouter();
 const navItems = [
   {
     name: "Dashboard",
     icon: "mdi-view-dashboard-outline",
-    link: "/dashboard",
+    routeName: "Dashboard",
   },
   {
     name: "Orders",
     icon: "mdi-list-status",
-    link: "/orders",
+    routeName: "Order",
   },
   {
     name: "Products",
     icon: "mdi-food-drumstick-outline",
-    link: "/products",
+    routeName: "Product.index",
   },
 ];
 
 $category.getAll();
-
+$order.getOrders();
 provide("main-scroll", scroll);
+provide("showAppBar", showAppBar);
 onMounted(() => {
   const main = document.getElementById("main");
   main?.addEventListener("scroll", () => {
@@ -99,5 +111,16 @@ onMounted(() => {
 }
 #main {
   scroll-behavior: smooth;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(-5%);
 }
 </style>

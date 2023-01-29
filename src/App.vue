@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useRoute } from "vue-router";
 import NotificationContainer from "./components/NotificationContainer.vue";
 </script>
 <style scoped></style>

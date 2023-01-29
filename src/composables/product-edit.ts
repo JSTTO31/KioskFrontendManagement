@@ -6,7 +6,7 @@ import { onBeforeRouteLeave } from "vue-router"
 
 export default (product: Product) => {
     const $product = productStore()
-    const edit = reactive({
+    const edit :  {name: string, image:string, subImages: [], price: string, category_id: any, stocks: string, status: string} = reactive({
         'category_id' : product.category_id,
         'name' : product.name,
         'price' : product.price,

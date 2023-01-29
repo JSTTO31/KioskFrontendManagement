@@ -22,8 +22,10 @@ const categoryStore = defineStore('category', {
     }),
     actions: {
         getAll(){
-            return authApi.get('/categories').then(({data}) => {
-                this.categories = data;
+            return authApi.get('/categories').then((response) => {
+                this.categories = response.data;
+                
+                return response
             });
         },
         addCategory(category: any){
@@ -47,7 +49,7 @@ const categoryStore = defineStore('category', {
         
     },
     getters: {
-       
+       getFirstCategoryId: state =>  state.categories[0].id
     }
 })
 

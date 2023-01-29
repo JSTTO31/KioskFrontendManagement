@@ -1,6 +1,10 @@
 <template>
-  <v-container fluid v-if="product" class="h-100">
-    <v-card-title>Product Information</v-card-title>
+  <v-container
+    class="pt-15 d-flex flex-column h-100"
+    style="padding-right: 250px; margin-top: -120px"
+    v-if="product"
+  >
+    <h1>Product Information</h1>
     <v-row class="px-10 py-5">
       <v-col cols="3">
         <label for="">Product Image</label>
@@ -139,10 +143,6 @@
     <div style="height: 0px; overflow: hidden">
       <v-file-input accept=".png" @change="setImage" ref="file"></v-file-input>
     </div>
-
-    <span id="exit-button">
-      <v-btn icon="mdi-close" @click="router.push({ name: 'Product' })"></v-btn>
-    </span>
   </v-container>
 </template>
 
@@ -150,7 +150,7 @@
 import { showError } from "../../../composables/utils";
 import { storeToRefs } from "pinia";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted, inject } from "vue";
 import productStore, { Product } from "../../../store/Product";
 import categoryStore from "../../../store/category";
 import productEdit from "../../../composables/product-edit";
@@ -162,6 +162,10 @@ const { edit, $v, setImage, update, isLoading, showAlert } = productEdit(product
 const showDialog = () => {
   file.value.click();
 };
+const showAppBar: any = inject("showAppBar");
+onMounted(() => {
+  showAppBar.value = false;
+});
 </script>
 
 <style scoped>

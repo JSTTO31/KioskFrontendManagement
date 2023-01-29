@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="w-100 pt-2 h-100 d-flex flex-column rounded-lg"
+    class="w-100 pt-2 h-100 d-flex flex-column rounded-lg pa-5"
     style="overflow-y: scroll"
     id="product-container"
     color="white"

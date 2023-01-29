@@ -1,61 +1,38 @@
 <template>
-  <teleport v-if="showTitle" to="#title">
-    Products <v-chip size="large">{{ page.total }}</v-chip>
-  </teleport>
   <!-- <CategoryContainerVue></CategoryContainerVue> -->
-  <v-container style="padding: 20px 55px" fluid>
-    <ProductFilterVue></ProductFilterVue>
-    <ProductTitleBoxVue v-model:mode="mode"></ProductTitleBoxVue>
-    <ProductTableHeadVue :mode="mode"></ProductTableHeadVue>
-    <v-row>
-      <v-col
-        :cols="mode == 'list' ? '12' : '3'"
-        class="pa-0 px-3 ma-0"
-        v-for="product in products"
-      >
-        <ProductCardVue
-          :mode="mode"
-          :key="product.id"
-          v-model:selected="selected"
-          :product="product"
-        ></ProductCardVue>
-      </v-col>
-    </v-row>
-    <EmptyData v-if="products.length < 1"></EmptyData>
-    <ProductFooterBoxVue
-      v-if="page.last_page > 0"
-      :fixed="fixed"
-      v-model:selected="selected"
-    ></ProductFooterBoxVue>
-    <v-overlay
-      :model-value="loading"
-      class="d-flex justify-center align-center"
-      contained
+  <!-- <ProductFilterVue></ProductFilterVue> -->
+  <ProductTitleBoxVue v-model:mode="mode"></ProductTitleBoxVue>
+  <ProductTableHeadVue :mode="mode"></ProductTableHeadVue>
+  <v-row>
+    <teleport to="#title" key="index">
+      Products <v-chip size="large">{{ page.total }}</v-chip>
+    </teleport>
+    <v-col
+      :cols="mode == 'list' ? '12' : '3'"
+      class="pa-0 px-3 ma-0"
+      v-for="product in products"
     >
-      <div class="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </v-overlay>
-  </v-container>
-
-  <v-overlay
-    :model-value="route.name == 'Product.show' || route.name == 'Product.create'"
-    class="align-center justify-center"
-    @click:outside="router.push({ name: 'Product' })"
-    style="overflow-y: scroll"
-  >
-    <v-card
-      id="children-container"
-      width="1250"
-      height="900"
-      class="bg-grey-lighten-4 rounded-lg"
-      style="overflow-y: scroll"
-    >
-      <router-view></router-view>
-    </v-card>
+      <ProductCardVue
+        :mode="mode"
+        :key="product.id"
+        v-model:selected="selected"
+        :product="product"
+      ></ProductCardVue>
+    </v-col>
+  </v-row>
+  <EmptyData v-if="products.length < 1"></EmptyData>
+  <ProductFooterBoxVue
+    v-if="page.last_page > 0"
+    :fixed="fixed"
+    v-model:selected="selected"
+  ></ProductFooterBoxVue>
+  <v-overlay :model-value="loading" class="d-flex justify-center align-center" contained>
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   </v-overlay>
 </template>
 

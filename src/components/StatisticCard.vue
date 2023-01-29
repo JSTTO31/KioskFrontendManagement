@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-5 rounded-lg d-flex align-end h-100" color="#EEEEEE" flat>
+  <v-card class="pa-5 rounded-lg d-flex align-end h-100 border" flat>
     <template #prepend>
       <v-avatar class="rounded-0" size="85">
         <v-img :src="image"></v-img>

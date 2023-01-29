@@ -1,8 +1,8 @@
 <template>
-  <teleport v-if="showTitle" to="#title">
-    My Orders <v-chip size="large">{{ page.total }}</v-chip>
-  </teleport>
   <v-container style="padding: 20px 55px" class="bg-transparent">
+    <teleport v-if="showTitle" to="#title">
+      My Orders <v-chip size="large">{{ page.total }}</v-chip>
+    </teleport>
     <v-row>
       <v-col :cols="Object.keys(order).length > 0 ? '7' : '12'">
         <OrderFilterVue></OrderFilterVue>

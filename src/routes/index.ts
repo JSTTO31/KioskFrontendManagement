@@ -7,7 +7,8 @@ import Index from '../pages/Merchant/Index.vue'
 import Dashboard from '../pages/Merchant/Dashboard.vue'
 import Order from '../pages/Merchant/Order.vue'
 // Merchant - Product Pages
-import Product from '../pages/Merchant/Product/Index.vue'
+import ProductIndex from '../pages/Merchant/Product/Index.vue'
+import Product from '../pages/Merchant/Product.vue'
 import ShowProduct from '../pages/Merchant/Product/Show.vue'
 import CreateProduct from '../pages/Merchant/Product/Create.vue'
 
@@ -55,6 +56,7 @@ const routes = [
             {
                 path: '/products',
                 name: 'Product',
+                redirect: {name: 'Product.index'},
                 component: Product,
                 //@ts-ignore
                 beforeEnter: (to, from, next) => {
@@ -68,6 +70,14 @@ const routes = [
                     })
                 },
                 children: [
+                    {
+                        path: '',
+                        name: 'Product.index',
+                        component: ProductIndex,
+                        meta: {
+                            requireAuth: true,
+                        },
+                    },
                     {
                         path: ':product_id',
                         name: 'Product.show',
@@ -98,7 +108,7 @@ const routes = [
                         }
                     }, 
                     {
-                        path: 'category',
+                        path: 'create',
                         name: 'Product.create',
                         component: CreateProduct,
                         meta: {
@@ -106,9 +116,13 @@ const routes = [
                         },
                         //@ts-ignore
                         beforeEnter: (to, from, next) => {
+                            const $category = categoryStore()
                             const {categories} = storeToRefs(categoryStore());
                             if(categories.value.length < 1){
-                                return next({name: 'Product'})
+                                
+                                return $category.getAll().then(() => {
+                                    return next()
+                                })
                             }
                             return next()
                         }
@@ -122,17 +136,9 @@ const routes = [
                 path: 'orders',
                 name: 'Order',
                 component: Order,
-                //@ts-ignore
-                beforeEnter: (to, from, next) => {
-                    const $order = orderStore();
-                    const {orders} = storeToRefs($order)
-                    if(orders.value.length > 0){
-                        return next();
-                    }
-                    $order.getOrders().then(() => {
-                        return next();
-                    })
-                }
+                meta: {
+                    requireAuth: true,
+                },
             }
             
         ]
@@ -142,18 +148,11 @@ const routes = [
     
 const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
 })
 
 router.beforeEach((to, from, next) => {
     nprogress.start();
-    const {isLogin} = storeToRefs(userStore());
-    if(to.meta.requireAuth && !isLogin.value){
-        return next('/login');
-    }
-    if((to.name == 'Login' || to.name == 'Register') && isLogin.value){
-        return next('/dashboard')
-    }
     
     return next();
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-show="quickNotifications.length > 0">
     <v-list class="px-5" style="overflow-x: hidden">
       <transition-group name="slide">
         <NotificationListItem

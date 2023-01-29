@@ -61,7 +61,7 @@ const orderStore = defineStore('order', {
                 const {pageOptions, orders} = data
                 this.orders = orders;
                 this.page = pageOptions
-            });
+            })
         },
         getOrder(id: number){
             const exists = this.orders.find((order) => order.id == id)

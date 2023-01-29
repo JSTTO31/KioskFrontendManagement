@@ -1,6 +1,6 @@
 <template>
-  <teleport to="#title" v-if="showTitle">{{ title }}</teleport>
   <v-container class="px-12 py-5">
+    <teleport to="#title">{{ title }}</teleport>
     <v-row>
       <v-col cols="9">
         <v-col cols="12" class="">
@@ -96,7 +96,6 @@ import StatisticCardVue from "../../components/StatisticCard.vue";
 import BarChart from "../../components/BarChart";
 import ProductListNavigatorDrawerVue from "../../components/ProductListNavigatorDrawer.vue";
 import { storeToRefs } from "pinia";
-import { computed, ref, onMounted } from "vue";
 import productStore from "../../store/Product";
 import dashboardStore from "../../store/dashboard";
 const title = "Dashboard";
@@ -109,12 +108,6 @@ const {
   mostProducts,
   profit,
 } = storeToRefs(dashboardStore());
-const { page: product_page } = storeToRefs(productStore());
-const showTitle = ref(false);
-onMounted(() => {
-  showTitle.value = true;
-});
-
 $dashboard.requestAll();
 </script>
 

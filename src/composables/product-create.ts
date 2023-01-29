@@ -1,93 +1,69 @@
 import useVuelidate from "@vuelidate/core"
 import { required, numeric, minValue } from "@vuelidate/validators"
 import { storeToRefs } from "pinia"
-import { reactive, ref } from "vue"
+import { reactive, computed, ref } from "vue"
+import { useRouter } from "vue-router"
 import categoryStore from "../store/category"
 import productStore from "../store/Product"
 
 
 export default () => {
-    const { categories } = storeToRefs(categoryStore())
+    const { getFirstCategoryId } = storeToRefs(categoryStore())
     const $product = productStore();
-    const product = reactive({
-        name: '',
+    const product : {name: string, image:string, subImages: [], price: string, category_id: any, stocks: string} = reactive({
+        name: 'example',
         image: '',
         subImages: [],
-        price: '',
-        category_id: categories.value[0].id,
-        stocks: ''
+        price: '123',
+        category_id: getFirstCategoryId.value,
+        stocks: '123'
     })
     const isLoading = ref(false);
-    const url = ref("");
-    
     const success = ref(false);
+    const currentLoaded = ref(0)
+    const numberOfItem = ref(0)
+    const percent = computed(() => currentLoaded.value/numberOfItem.value ? ((currentLoaded.value/numberOfItem.value) * 100).toFixed(0) : 0)
     const rules = {
         name: {required},
         image: {required},
-        subImages: {required},
         price: {required, numeric, minValue: minValue(1)},
         stocks: {required, numeric, minValue: minValue(1)}
     }
 
     const $v = useVuelidate(rules, product);
 
-    const setImage = (e: any) => {
-        const file = e.target.files[0];
-        
-        $v.value.image.$touch();
-        if(file){
-            product.image = file;
-            const reader = new FileReader();
-            reader.onload = () => {
-                //@ts-ignore
-                url.value = reader.result;
-            }
-            reader.readAsDataURL(file);
-
-            return;
-        }
-        product.image = ""
-        url.value = ""
-    }
-    const urls = ref([])
-    const setImages = (e: any) => {
-        const files = e.target.files;
-
-        $v.value.subImages.$touch();
-        if(files){
-            product.subImages = files 
-            for (let index = 0; index < files.length; index++) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    urls.value.push(reader.result)
-                } 
-                
-                reader.readAsDataURL(files[index])
-            }
-
-            return;
-        }
-
-        product.subImages = []
-        urls.value = []
-    }
-
     const create = () => {
+        if($v.value.$invalid){
+            console.log('touch');
+            
+            $v.value.$touch()
+            return
+        }
         isLoading.value = true
-        return $product.add(product).then(() => {
-            reset()
-            isLoading.value = false
-            success.value =true
-        });
+        numberOfItem.value = product.subImages.length
+        return $product.add(product).then((response) => {
+            const container : any = []
+            product.subImages.forEach((item) => {
+                container.push($product.addSubImage(item, response.data.id).then(() => currentLoaded.value++))
+            })
+        
+            return Promise.all(container).then(() => {
+                reset()
+                isLoading.value = false
+                success.value =true
+            });
+        })
     }
 
     const reset = () => {
         product.name = ""
         product.price = "";
         product.image = "";
-        url.value = ""
+        product.subImages = []
         $v.value.$reset();
     }
 
-    return {product, $v, setImage, url, reset, create, isLoading, success, urls, setImages}
+    return {product, $v, reset, create, isLoading, success, percent}
 }
+
+

@@ -79,33 +79,22 @@ const productStore = defineStore('product', {
                     headers: {
                         'Content-type': 'multipart/form-data',
                     }
-                }).then(({data}) => {
-                    this.products.unshift(data)
+                }).then((response) => {
+                    this.products.unshift(response.data)
                     this.products.pop();
+
+                    return response
                 })
         },
-        // add(product: any){
-        //     const formData = new FormData();
-        //     formData.append('image', product.image);
-        //     formData.append('name', product.name);
-        //     formData.append('price', product.price);
-        //     formData.append('stocks', product.stocks);
-        //     formData.append('category_id', product.category_id);
-
-        //     const container : any = [];
-            
-        //     for (let index = 0; index < 50; index++) {
-        //         container.push( authApi.post('/products', formData, {
-        //             headers: {
-        //                 'Content-type': 'multipart/form-data',
-        //             }
-        //         }).then(({data}) => {
-        //             this.products.push(data)
-        //         }))
-        //     }
-
-        //     return Promise.all(container);
-        // },
+        addSubImage(image: string, product_id: string){
+            const formData = new FormData();
+            formData.append('image', image)
+            return authApi.post(`/product/${product_id}/sub-images`, formData, {
+                headers: {
+                    'Content-type' : 'multipart/form-data'
+                }
+            });
+        },
         remove(product_id: number){
             return authApi.delete('/products/' + product_id).then(() => {
                 this.products = this.products.filter(item => item.id != product_id);
@@ -142,7 +131,9 @@ const productStore = defineStore('product', {
         },
     },
     getters: {
-        getProductById: state => (id: number) => state.products.find(product => product.id == id)
+        getProductById: state => (id: number) => state.products.find(product => product.id == id),
+        getTotalProduct: state => state.products.length,
+    
     }
 })
 
