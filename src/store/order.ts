@@ -24,7 +24,8 @@ export interface Order{
     created_at: string;
     updated_at: string;
     order: Order,
-    total: number
+    total: number;
+    order_number: string;
 }
 
 export interface paginateOrder{

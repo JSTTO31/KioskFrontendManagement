@@ -1,11 +1,15 @@
 <template>
-  <v-card class="pa-5 rounded-lg d-flex align-end h-100 border" flat>
+  <v-card class="rounded-lg d-flex align-start mx-n3 h-100" flat>
     <template #prepend>
-      <v-avatar class="rounded-0" size="85">
-        <v-img :src="image"></v-img>
-      </v-avatar>
+      <v-card variant="tonal" class="rounded-lg pa-4">
+        <v-avatar class="rounded-0" size="75">
+          <v-img :src="image"></v-img>
+        </v-avatar>
+      </v-card>
     </template>
-    <template #title>{{ title }}</template>
+    <template #title
+      ><h5 class="font-weight-medium">{{ title }}</h5></template
+    >
     <template #subtitle
       ><h1 class="text-h2 font-weight-bold">
         {{ number }}

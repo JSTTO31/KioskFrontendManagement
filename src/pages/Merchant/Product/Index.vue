@@ -1,42 +1,110 @@
 <template>
   <!-- <CategoryContainerVue></CategoryContainerVue> -->
   <!-- <ProductFilterVue></ProductFilterVue> -->
-  <ProductTitleBoxVue v-model:mode="mode"></ProductTitleBoxVue>
-  <ProductTableHeadVue :mode="mode"></ProductTableHeadVue>
   <v-row>
-    <teleport to="#title" key="index">
-      Products <v-chip size="large">{{ page.total }}</v-chip>
-    </teleport>
-    <v-col
-      :cols="mode == 'list' ? '12' : '3'"
-      class="pa-0 px-3 ma-0"
-      v-for="product in products"
-    >
-      <ProductCardVue
-        :mode="mode"
-        :key="product.id"
-        v-model:selected="selected"
-        :product="product"
-      ></ProductCardVue>
+    <v-col cols="9">
+      <ProductTitleBoxVue v-model:mode="mode"></ProductTitleBoxVue>
+      <div class="rounded-lg">
+        <ProductTableHeadVue :mode="mode"></ProductTableHeadVue>
+        <v-row>
+          <teleport to="#app-bar">
+            <div class="w-100 d-flex align-center">
+              <h1 class="text-h3 px-8 roboto font-weight-bold text-blue-grey-darken-4">
+                Products
+              </h1>
+            </div>
+          </teleport>
+          <v-col
+            :cols="mode == 'list' ? '12' : '4'"
+            class="pa-0 px-3 ma-0"
+            v-for="product in products.slice(0, 9)"
+          >
+            <ProductCardVue
+              :mode="mode"
+              :key="product.id"
+              v-model:selected="selected"
+              :product="product"
+            ></ProductCardVue>
+          </v-col>
+        </v-row>
+        <EmptyData v-if="products.length < 1"></EmptyData>
+        <ProductFooterBoxVue
+          v-if="page.last_page > 0"
+          :fixed="fixed"
+          v-model:selected="selected"
+        ></ProductFooterBoxVue>
+      </div>
+    </v-col>
+    <v-col cols="3">
+      <v-card class="py-10 mt-5 rounded-lg">
+        <div class="d-flex flex-column align-center">
+          <span class="font-weight-regular text-h6 text-grey-darken-1"
+            >Remaining stocks</span
+          >
+          <span class="text-h2">{{ total_stocks }}</span>
+        </div>
+        <v-divider class="my-10 mx-4"></v-divider>
+        <div class="w-100 d-flex">
+          <v-progress-circular
+            rotate="360"
+            size="250"
+            width="25"
+            color="amber-darken-4"
+            class="mx-auto"
+            :model-value="100 - (total_stocks / (total_stocks + total_sales)) * 100"
+          >
+            <div class="d-flex flex-column align-center">
+              <h1 class="text-h3">
+                {{
+                  (100 - (total_stocks / (total_stocks + total_sales)) * 100).toFixed(2)
+                }}
+                %
+              </h1>
+              <!-- <span class="text-h2">{{ total_stocks }}</span>
+              <span class="font-weight-medium">Remaining stocks</span> -->
+            </div>
+          </v-progress-circular>
+        </div>
+      </v-card>
+      <v-card class="rounded-lg border d-flex align-start mt-2">
+        <template #prepend>
+          <v-card color="success" variant="tonal" class="rounded-lg pa-4">
+            <v-icon class="rounded-0" size="25"> mdi-circle </v-icon>
+          </v-card>
+        </template>
+        <template #title><h5 class="font-weight-medium">Available</h5></template>
+        <template #subtitle
+          ><h3 class="text-h4 font-weight-black">{{ total_available }}</h3></template
+        >
+      </v-card>
+      <v-card class="rounded-lg borderd-flex align-start mt-2">
+        <template #prepend>
+          <v-card color="grey" variant="tonal" class="rounded-lg pa-4">
+            <v-icon class="rounded-0" size="25"> mdi-circle </v-icon>
+          </v-card>
+        </template>
+        <template #title><h5 class="font-weight-medium">Disabled</h5></template>
+        <template #subtitle
+          ><h3 class="text-h4 font-weight-black">{{ total_disable }}</h3></template
+        >
+      </v-card>
+      <v-card class="rounded-lg d border-flex align-start mt-2">
+        <template #prepend>
+          <v-card color="warning" variant="tonal" class="rounded-lg pa-4">
+            <v-icon class="rounded-0" size="25"> mdi-circle </v-icon>
+          </v-card>
+        </template>
+        <template #title><h5 class="font-weight-medium">Draft</h5></template>
+        <template #subtitle
+          ><h3 class="text-h4 font-weight-black">{{ total_draft }}</h3></template
+        >
+      </v-card>
     </v-col>
   </v-row>
-  <EmptyData v-if="products.length < 1"></EmptyData>
-  <ProductFooterBoxVue
-    v-if="page.last_page > 0"
-    :fixed="fixed"
-    v-model:selected="selected"
-  ></ProductFooterBoxVue>
-  <v-overlay :model-value="loading" class="d-flex justify-center align-center" contained>
-    <div class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </v-overlay>
 </template>
 
 <script setup lang="ts">
+import OrderView from "../../../components/OrderView.vue";
 import ProductTableHeadVue from "../../../components/ProductTableHead.vue";
 import EmptyData from "../../../components/EmptyData.vue";
 import ProductFooterBoxVue from "../../../components/ProductFooterBox.vue";
@@ -50,7 +118,15 @@ import { onBeforeRouteUpdate, useRoute, useRouter, onBeforeRouteLeave } from "vu
 const route = useRoute();
 const router = useRouter();
 const $product = productStore();
-const { products, page } = storeToRefs($product);
+const {
+  products,
+  page,
+  total_stocks,
+  total_sales,
+  total_available,
+  total_disable,
+  total_draft,
+} = storeToRefs($product);
 const fixed = ref(true);
 const selected = ref(new Set());
 const loading = ref(false);
@@ -64,11 +140,6 @@ onMounted(() => {
   main?.addEventListener("scroll", () => {
     fixed.value = scrollHeight - 118 <= main.scrollTop ? false : true;
   });
-});
-onBeforeRouteLeave(() => {
-  const title = document.getElementById("title");
-  //@ts-ignore
-  title.innerHTML = "";
 });
 onBeforeRouteUpdate((to, from) => {
   if (

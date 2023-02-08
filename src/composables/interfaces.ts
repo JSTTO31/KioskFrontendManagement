@@ -17,5 +17,6 @@ export interface Page{
     prev_page_url: string,
     to: number,
     total: number,
-    query: string
+    query: string,
+ 
 }

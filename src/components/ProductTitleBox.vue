@@ -25,15 +25,15 @@
     </div>
     <v-spacer></v-spacer>
     <v-btn
-      class="mr-4"
-      prepend-icon="mdi-plus"
+      class="mr-2 rounded-lg"
       color="amber-darken-1"
       flat
+      variant="outlined"
       :to="{ name: 'Product.create' }"
-      >Add Product</v-btn
-    >
+      icon="mdi-plus"
+    ></v-btn>
     <v-btn
-      class="mx-1"
+      class="rounded-lg mx-1"
       variant="text"
       flat
       icon="mdi-view-list"
@@ -42,7 +42,7 @@
       :color="mode == 'list' ? 'amber-darken-1' : 'grey-darken-1'"
     ></v-btn>
     <v-btn
-      class="mx-1"
+      class="rounded-lg mx-1"
       variant="text"
       flat
       icon="mdi-view-grid"

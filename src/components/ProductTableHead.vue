@@ -30,27 +30,14 @@
     >
   </div>
   <div v-else>
-    <v-card
-      class="my-3 mb-5 border py-2 rounded-t-lg bg-amber-lighten-5 d-flex align-center"
-      flat
-    >
+    <v-card class="bg-amber-lighten-4 rounded-0 py-2" flat>
       <v-row>
-        <v-col cols="3" class="px-10 py-5">
+        <v-col cols="4" class="px-10 pt-3 mb-5">
           <div class="h-100 d-flex align-center">
-            <h4 class="font-weight-medium text-uppercase">Product name</h4>
+            <!-- <h4 class="font-weight-medium text-uppercase">Product name</h4> -->
           </div>
         </v-col>
-        <v-col cols="2" class="py-5 pa-0">
-          <div class="h-100 d-flex align-center">
-            <v-btn
-              variant="text"
-              append-icon="mdi-menu-swap"
-              :to="{ query: { ...route.query, orderBy: 'date' } }"
-              >Date</v-btn
-            >
-          </div>
-        </v-col>
-        <v-col cols="2" class="py-5 pa-0">
+        <v-col cols="2" class="pt-3 mb-5 pa-0">
           <div class="h-100 d-flex align-center">
             <v-btn
               variant="text"
@@ -60,7 +47,7 @@
             >
           </div>
         </v-col>
-        <v-col cols="2" class="py-5 pa-0">
+        <v-col cols="2" class="pt-3 mb-5 pa-0">
           <div class="h-100 d-flex align-center">
             <v-btn
               variant="text"
@@ -70,7 +57,7 @@
             >
           </div>
         </v-col>
-        <v-col cols="2" class="py-5 pa-0">
+        <v-col cols="2" class="pt-3 mb-5 pa-0">
           <div class="h-100 d-flex align-center">
             <v-btn
               variant="text"
@@ -80,7 +67,7 @@
             >
           </div>
         </v-col>
-        <v-col cols="1" class="py-5 pa-0">
+        <v-col cols="1" class="pt-3 mb-5 pa-0">
           <div class="h-100 d-flex align-center">
             <v-btn
               variant="text"

@@ -1,14 +1,14 @@
 <template>
-  <v-card class="mb-2 border bg-amber-lighten-5" flat>
+  <v-card class="bg-amber-lighten-4 rounded-0 py-2" flat>
     <v-row>
       <v-col cols="4" class="d-flex align-center py-5">
-        <v-btn
+        <!-- <v-btn
           variant="text"
           append-icon="mdi-menu-swap"
           flat
           :to="{ query: { ...route.query, orderBy: 'id' } }"
           >Order ID</v-btn
-        >
+        > -->
       </v-col>
       <v-col cols="2" class="d-flex align-center">
         <span class="font-weight-regular"

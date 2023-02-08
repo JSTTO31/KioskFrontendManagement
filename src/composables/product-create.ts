@@ -16,7 +16,8 @@ export default () => {
         subImages: [],
         price: '123',
         category_id: getFirstCategoryId.value,
-        stocks: '123'
+        stocks: '123',
+        variants: [],
     })
     const isLoading = ref(false);
     const success = ref(false);

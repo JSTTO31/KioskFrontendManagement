@@ -1,16 +1,26 @@
 <template>
-  <v-container style="padding: 20px 55px" class="bg-transparent">
-    <teleport v-if="showTitle" to="#title">
-      My Orders <v-chip size="large">{{ page.total }}</v-chip>
+  <v-container class="bg-transparent px-15 pt-10">
+    <teleport to="#app-bar">
+      <h1 class="text-h3 px-10 roboto font-weight-bold text-blue-grey-darken-4">
+        My Orders
+      </h1>
     </teleport>
     <v-row>
-      <v-col :cols="Object.keys(order).length > 0 ? '7' : '12'">
+      <v-col cols="8">
+        <OrderFilterVue></OrderFilterVue>
+        <v-card flat class="rounded-lg">
+          <OrderTableHeadVue></OrderTableHeadVue>
+          <OrderRowVue v-for="order in orders.slice(0, 7)" :order="order"></OrderRowVue>
+          <OrderFooterBoxVue v-if="page.last_page > 1"></OrderFooterBoxVue>
+        </v-card>
+      </v-col>
+      <!-- <v-col :cols="Object.keys(order).length > 0 ? '7' : '12'">
         <OrderFilterVue></OrderFilterVue>
         <OrderTableHeadVue></OrderTableHeadVue>
         <EmptyDataVue v-if="page.total < 1"></EmptyDataVue>
         <OrderRowVue v-for="order in orders" :order="order"></OrderRowVue>
-        <OrderFooterBoxVue v-if="page.last_page > 1"></OrderFooterBoxVue>
-      </v-col>
+        
+      </v-col> -->
       <v-col>
         <OrderViewVue></OrderViewVue>
       </v-col>
@@ -19,12 +29,13 @@
 </template>
 
 <script setup lang="ts">
+import StatisticCard from "../../components/StatisticCard.vue";
 import EmptyDataVue from "../../components/EmptyData.vue";
 import OrderFooterBoxVue from "../../components/OrderFooterBox.vue";
 import OrderTableHeadVue from "../../components/OrderTableHead.vue";
 import OrderFilterVue from "../../components/OrderFilter.vue";
 import OrderViewVue from "../../components/OrderView.vue";
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount, inject } from "vue";
 import { storeToRefs } from "pinia";
 import OrderRowVue from "../../components/OrderRow.vue";
 import orderStore from "../../store/order";
@@ -33,6 +44,8 @@ const $order = orderStore();
 const { orders, order, page } = storeToRefs(orderStore());
 const fixed = ref(false);
 const showTitle = ref(false);
+const showNavigationRight: any = inject("showNavigationRight");
+$order.getOrders();
 onBeforeRouteUpdate((to, from, next) => {
   if (to.query.order == from.query.order) {
     const query = to.fullPath.match(/\?.*/gi)?.join("");
@@ -44,12 +57,11 @@ onBeforeRouteUpdate((to, from, next) => {
 onBeforeRouteLeave(() => {
   //@ts-ignore
   order.value = {};
-  const title = document.getElementById("title");
-  //@ts-ignore
-  title.innerHTML = "";
+  showNavigationRight.value = true;
 });
-onMounted(() => {
-  showTitle.value = true;
+
+onBeforeMount(() => {
+  showNavigationRight.value = false;
 });
 
 //@ts-ignore

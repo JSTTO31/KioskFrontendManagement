@@ -20,6 +20,7 @@
     >
       <v-img :src="url"></v-img>
       <v-btn
+        v-if="!persistent || (beforeUrl.length > 0 && beforeUrl != url)"
         id="remove"
         icon="mdi-close"
         size="x-small"
@@ -27,16 +28,25 @@
         color="grey-lighten-2"
         @click.stop="removeImage"
       ></v-btn>
+      <v-card color="grey-darken-1" id="footer" class="w-100 rounded-0">
+        <h4 class="text-center font-weight-medium">Main</h4>
+      </v-card>
     </div>
   </v-hover>
+
   <input id="file" type="file" @change="setImage" hidden ref="file" accept=".png" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-const props = defineProps(["image"]);
-const emits = defineEmits(["update:image"]);
-const url = ref("");
+const props = defineProps({
+  image: {},
+  url: { default: "", type: String },
+  persistent: { default: false },
+});
+const beforeUrl = props.url;
+const emits = defineEmits(["update:image", "remove", "update"]);
+const url = ref(props.url);
 const file = ref();
 const showDialog = () => {
   file.value.click();
@@ -55,11 +65,15 @@ const setImage = (e: any) => {
     reader.readAsDataURL(file);
     //@ts-ignore
     document.getElementById("file").value = "";
+
+    emits("update");
   }
 };
 const removeImage = () => {
   emits("update:image", "");
-  url.value = "";
+  url.value = beforeUrl;
+
+  emits("remove");
 };
 </script>
 
@@ -72,5 +86,9 @@ const removeImage = () => {
   top: 0;
   right: 0;
   z-index: 10000;
+}
+#footer {
+  position: absolute;
+  bottom: 0;
 }
 </style>

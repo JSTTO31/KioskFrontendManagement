@@ -38,111 +38,85 @@ const routes = [
         name: 'Register',
         component: Register
     },
-   
     {
         path: '',
-        name: 'Home',
-        redirect: 'dashboard',
-        component: Index,
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: {
+            requireAuth: true,
+        }
+    },
+    {
+        path: '/products',
+        name: 'Product',
+        redirect: {name: 'Product.index'},
+        component: Product,
+        //@ts-ignore
+        beforeEnter: (to, from, next) => {
+            const $product = productStore();
+            const {products} = storeToRefs($product)
+            if(products.value.length > 0){
+                return next();
+            }
+            $product.getAll(to.fullPath.match(/\?.*/gi)?.join("")).then(() => {
+                return next();
+            })
+        },
         children: [
             {
-                path: 'dashboard',
-                name: 'Dashboard',
-                component: Dashboard,
+                path: '',
+                name: 'Product.index',
+                component: ProductIndex,
                 meta: {
                     requireAuth: true,
-                }
-            }, 
+                },
+            },
             {
-                path: '/products',
-                name: 'Product',
-                redirect: {name: 'Product.index'},
-                component: Product,
+                path: ':product_id',
+                name: 'Product.show',
+                component: ShowProduct,
+                meta: {
+                    requireAuth: true,
+                },
+                //@ts-ignore
+                props: route => ({product: route.params.product}),
                 //@ts-ignore
                 beforeEnter: (to, from, next) => {
                     const $product = productStore();
-                    const {products} = storeToRefs($product)
-                    if(products.value.length > 0){
-                        return next();
+                    const { getMostProductById } = storeToRefs(dashboardStore())
+                    const { product, getProductById } = storeToRefs(productStore());
+                    
+                    //@ts-ignore
+                    product.value = getProductById.value(to.params.product_id) || getMostProductById.value(to.params.product_id)
+                    if(product.value){
+                        return next()
                     }
-                    $product.getAll(to.fullPath.match(/\?.*/gi)?.join("")).then(() => {
-                        return next();
+                    $product.get(to.params.product_id).then(() => {
+                        return next()
                     })
-                },
-                children: [
-                    {
-                        path: '',
-                        name: 'Product.index',
-                        component: ProductIndex,
-                        meta: {
-                            requireAuth: true,
-                        },
-                    },
-                    {
-                        path: ':product_id',
-                        name: 'Product.show',
-                        component: ShowProduct,
-                        meta: {
-                            requireAuth: true,
-                        },
-                        //@ts-ignore
-                        props: route => ({product: route.params.product}),
-                        //@ts-ignore
-                        beforeEnter: (to, from, next) => {
-                            const $product = productStore();
-                            const { getMostProductById } = storeToRefs(dashboardStore())
-                            const { product, getProductById } = storeToRefs(productStore());
-                            const { categories } = storeToRefs(categoryStore());
-                            
-                            if(!categories.value || !product){
-                                return next({name: 'Product'})
-                            }
-                            //@ts-ignore
-                            product.value = getProductById.value(to.params.product_id) || getMostProductById.value(to.params.product_id)
-                            if(product.value){
-                                return next()
-                            }
-                            $product.get(to.params.product_id).then(() => {
-                                return next()
-                            })
-                        }
-                    }, 
-                    {
-                        path: 'create',
-                        name: 'Product.create',
-                        component: CreateProduct,
-                        meta: {
-                            requireAuth: true,
-                        },
-                        //@ts-ignore
-                        beforeEnter: (to, from, next) => {
-                            const $category = categoryStore()
-                            const {categories} = storeToRefs(categoryStore());
-                            if(categories.value.length < 1){
-                                
-                                return $category.getAll().then(() => {
-                                    return next()
-                                })
-                            }
-                            return next()
-                        }
-                    }
-                ],
-                meta: {
-                    requireAuth: true,
                 }
             }, 
             {
-                path: 'orders',
-                name: 'Order',
-                component: Order,
+                path: 'create',
+                name: 'Product.create',
+                component: CreateProduct,
                 meta: {
                     requireAuth: true,
                 },
             }
-            
-        ]
-    },
+        ],
+        meta: {
+            requireAuth: true,
+        }
+    }, 
+    {
+        path: '/orders',
+        name: 'Order',
+        component: Order,
+        meta: {
+            requireAuth: true,
+        },
+    }
     
 ]
     
@@ -152,7 +126,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+    const {isLogin} = storeToRefs(userStore())
     nprogress.start();
+    if(to.meta.requireAuth && !isLogin.value){
+        return next({
+            name: 'Login'
+        })
+    }
     
     return next();
 })

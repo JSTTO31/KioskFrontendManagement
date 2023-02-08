@@ -1,21 +1,38 @@
 <template>
-  <div
-    style="width: 150px; height: 150px; position: relative; cursor: pointer"
-    class="border bg-transparent align-center justify-center"
-    flat
-    v-ripple
-    @click="showDialog"
-  >
-    <v-img :src="url"></v-img>
-    <v-btn
-      id="remove"
-      icon="mdi-close"
-      size="x-small"
-      class="mt-n4 mr-n4"
-      color="grey-lighten-2"
-      @click.stop="emits('remove')"
-    ></v-btn>
-  </div>
+  <v-hover v-slot="{ isHovering, props }">
+    <div
+      v-bind="props"
+      style="
+        width: 150px;
+        height: 150px;
+        position: relative;
+        cursor: move;
+        position: relative;
+      "
+      class="border bg-transparent align-center flex-column justify-center"
+      flat
+    >
+      <v-img :src="url"></v-img>
+      <v-card v-if="isHovering" flat class="w-100 rounded-0 d-flex" id="action">
+        <v-btn
+          @click.stop="showDialog"
+          flat
+          size="small"
+          color="amber-darken-4"
+          class="rounded-0 w-50"
+          >edit</v-btn
+        >
+        <v-btn
+          @click.stop="emits('remove')"
+          flat
+          size="small"
+          color="amber-darken-4"
+          class="rounded-0 w-50"
+          >Delete</v-btn
+        >
+      </v-card>
+    </div>
+  </v-hover>
   <input id="file" type="file" @change="changeImage" ref="file" hidden accept=".png" />
 </template>
 
@@ -45,12 +62,18 @@ const changeImage = (e: any) => {
 const removeImage = () => {};
 
 onMounted(() => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    url.value = reader.result;
-  };
+  if (props.image instanceof File) {
+    const reader = new FileReader();
+    console.log("triggered");
 
-  reader.readAsDataURL(props.image);
+    reader.onload = () => {
+      url.value = reader.result;
+    };
+
+    reader.readAsDataURL(props.image);
+  } else {
+    url.value = props.image;
+  }
 });
 </script>
 
@@ -63,5 +86,9 @@ onMounted(() => {
   top: 0;
   right: 0;
   z-index: 10000;
+}
+#action {
+  position: absolute;
+  bottom: 0;
 }
 </style>

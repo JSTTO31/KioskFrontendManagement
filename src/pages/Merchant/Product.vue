@@ -1,5 +1,5 @@
 <template>
-  <v-container style="padding: 0px 55px" fluid class="h-100">
+  <v-container class="pt-5 px-15 h-100">
     <router-view v-slot="{ Component }">
       <component :is="Component"></component>
     </router-view>
@@ -7,26 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject } from "vue";
+import { ref, onMounted } from "vue";
 import productStore from "../../store/Product";
 import { onBeforeRouteUpdate, onBeforeRouteLeave } from "vue-router";
 const $product = productStore();
 const fixed = ref(true);
-const showTitle = ref(false);
-const mainScroll: any = inject("main-scroll");
 onMounted(() => {
   const main = document.getElementById("product-main");
-  showTitle.value = true;
   //@ts-ignore
   const scrollHeight = main?.scrollHeight - main?.clientHeight;
   main?.addEventListener("scroll", () => {
     fixed.value = scrollHeight - 118 <= main.scrollTop ? false : true;
   });
-});
-onBeforeRouteLeave(() => {
-  const title = document.getElementById("title");
-  //@ts-ignore
-  title.innerHTML = "";
 });
 onBeforeRouteUpdate((to, from) => {
   if (
@@ -36,11 +28,6 @@ onBeforeRouteUpdate((to, from) => {
   ) {
     const query = to.fullPath.match(/\?.*/gi)?.join("");
     $product.getAll(query);
-  }
-
-  const main = document.getElementById("main");
-  if (main) {
-    main.scrollTo(0, 0);
   }
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mt-2 py-2 px-3 d-flex align-center" flat>
+  <v-card class="mt-2 px-3 d-flex align-center" flat>
     <div>
       <span>Page {{ page }}/{{ paginate.last_page }}</span>
     </div>
@@ -7,14 +7,14 @@
     <v-btn
       icon="mdi-chevron-left"
       variant="text"
-      class="mx-1"
+      class="rounded-lg mx-1"
       :disabled="page < 2"
       @click="page--"
     ></v-btn>
     <v-btn
       icon="mdi-chevron-right"
       variant="text"
-      class="mx-1"
+      class="rounded-lg mx-1"
       :disabled="paginate.last_page <= page"
       @click="page++"
     ></v-btn>
